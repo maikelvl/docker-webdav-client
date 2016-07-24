@@ -1,0 +1,31 @@
+FROM debian:jessie
+
+ENV DEBIAN_FRONTEND="noninteractive"
+
+RUN apt-get update \
+ && apt-get -y autoremove \
+ && apt-get -y install \
+        ca-certificates \
+        davfs2 \
+        rsync \
+ && apt-get clean \
+ && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
+
+RUN useradd -r webdav \
+ && usermod -aG davfs2 webdav \
+ && mkdir /mnt/webdav \
+ && chown webdav:webdav /mnt/webdav \
+ && ln -sf bash /bin/ash
+
+ENV RSYNC_PARAMS="-rP --delete --no-whole-file --inplace" \
+    WEBDAV_LOCAL_PATH="/data" \
+    WEBDAV_PROTO="https"
+
+# COPY bin/* /usr/local/bin/
+COPY entrypoint.sh /
+COPY env-vars.sh /
+COPY functions.sh /
+COPY hooks.sh /hooks-placeholder.sh
+
+ENTRYPOINT ["/entrypoint.sh"]
+CMD ["start"]

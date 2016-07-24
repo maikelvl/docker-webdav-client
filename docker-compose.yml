@@ -1,0 +1,21 @@
+webdav-local-server:
+    image: visity/webdav
+    ports:
+        - "80:80"
+
+webdav-local:
+    build: .
+    privileged: true
+    environment:
+        WEBDAV_USER: "admin"
+        WEBDAV_PASS: "secret"
+        WEBDAV_URL: "http://192.168.99.100"
+        WEBDAV_TARGET_DIR: "backup"
+
+webdav-stack:
+    build: .
+    privileged: true
+    env_file: .env
+    environment:
+        WEBDAV_URL: "https://stack.maikelvlasman.com/remote.php/webdav"
+        WEBDAV_TARGET_DIR: "backup"

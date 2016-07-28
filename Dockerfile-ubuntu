@@ -8,6 +8,7 @@ RUN apt-get update \
         ca-certificates \
         davfs2 \
         rsync \
+        rsyslog \
  && apt-get clean \
  && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 

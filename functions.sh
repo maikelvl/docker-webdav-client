@@ -10,20 +10,24 @@ start() {
     chown webdav:webdav /mnt/webdav/$WEBDAV_TARGET_DIR
     # mkdir -p $WEBDAV_LOCAL_PATH
     # rsync $RSYNC_PARAMS $WEBDAV_LOCAL_PATH /mnt/webdav/$WEBDAV_TARGET_DIR
-    while true;do
-        sleep 1
-        # ls -al $WEBDAV_LOCAL_PATH
-        ls -Al /mnt/webdav/$WEBDAV_TARGET_DIR
-        echo ""
-    done
+    # while true;do
+    #     sleep 1
+    #     # ls -al $WEBDAV_LOCAL_PATH
+    #     date
+    #     ls -Al /mnt/webdav/$WEBDAV_TARGET_DIR
+    #     echo ""
+    # done
+    ln -sf /dev/stdout /var/log/syslog
+    exec rsyslogd -n
 }
 
 stop() {
     # unmount, and wait for transfers
-    # echo "Waiting davfs to trigger for file upload, continue in 10s..."
-    # sleep 10
-
+    echo "Waiting davfs to trigger for file upload, continue in 10s..."
+    sleep 10
     umount.davfs /mnt/webdav
+    sleep 5
+    echo "Exiting..."
     exit 0
 }
 
@@ -32,6 +36,8 @@ setup() {
 
     echo "${WEBDAV_URL} /mnt/webdav davfs user,rw,noauto 0 0" > /etc/fstab
     echo "${WEBDAV_URL} ${WEBDAV_USER} \"${WEBDAV_PASS}\"" > /etc/davfs2/secrets
+
+    echo 'debug http' >> /etc/davfs2/davfs2.conf
 }
 
 validate_env_vars() {

@@ -5,6 +5,7 @@ webdav-local-server:
 
 webdav-local:
     build: .
+    dockerfile: Dockerfile-ubuntu
     privileged: true
     environment:
         WEBDAV_USER: "admin"
@@ -14,6 +15,7 @@ webdav-local:
 
 webdav-stack:
     build: .
+    dockerfile: Dockerfile-ubuntu
     privileged: true
     env_file: .env
     environment:
